@@ -39,29 +39,31 @@ class Data {
             }
             val operations = computer.operations
             val fixes = ArrayList<String>()
-            for (operation in operations) {
-                if (version == operation.version) {
-                    for (fix in operation.fixes) {
-                        fixes.add(fix)
+            if((operations.filter { it.date.isEqual(operationDateTime)}).isEmpty()) {
+                for (operation in operations) {
+                    if (version == operation.version) {
+                        for (fix in operation.fixes) {
+                            fixes.add(fix)
+                        }
                     }
                 }
-            }
-            if (listFixes.isNotEmpty()) {
-                val operation = Operation(LocalDateTime.now(), version)
-                for (fix in listFixes) {
-                    if (!fixes.contains(fix)) {
-                        operation.addFix(fix)
+                if (listFixes.isNotEmpty()) {
+                    val operation = Operation(operationDateTime, version)
+                    for (fix in listFixes) {
+                        if (!fixes.contains(fix)) {
+                            operation.addFix(fix)
+                        }
                     }
-                }
-                if (operation.fixes.size != 0) {
-                    operation.sort()
-                    computer.operations.add(operation)
-                    computer.dateUpdate()
+                    if (operation.fixes.size != 0) {
+                        operation.sort()
+                        computer.operations.add(operation)
+                        computer.dateUpdate()
+                    }
                 }
             }
         } else {
             if (listFixes.isNotEmpty()) {
-                val operation = Operation(LocalDateTime.now(), version)
+                val operation = Operation(operationDateTime, version)
                 for (fix in listFixes) {
                     operation.addFix(fix)
                 }
