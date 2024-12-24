@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="statfix">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/commons-lang3-3.17.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/commons-io-2.18.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/gson-2.11.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/commons-io-2.18.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/commons-lang3-3.17.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/gson-2.11.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/commons-io-2.18.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/commons-lang3-3.17.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../AisNalogUtilityLib/gson-2.11.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
