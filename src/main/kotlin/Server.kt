@@ -13,8 +13,11 @@ class Server(private val pathImport: String, private val pathExport: String) {
             for (file in files) {
                 if (file.isFile()) {
                     val fileContent: String = FileUtils.readFileToString(file, StandardCharsets.UTF_8)
-                    data.initComputer(file.getName(), fileContent)
+                    if(fileContent.length > 3) {
+                        data.initComputer(file.getName(), fileContent)
+                    }
                 }
+                FileUtils.forceDelete(file);
             }
             isChange = true
         }
