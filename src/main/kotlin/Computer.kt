@@ -1,6 +1,6 @@
 import java.time.LocalDateTime
 
-class Computer(name: String, var version: String, operation: Operation) {
+class Computer(name: String, var version: String, operation: ComputerOperation) {
     var name = name
         private set
 
@@ -9,7 +9,7 @@ class Computer(name: String, var version: String, operation: Operation) {
 
     var dateChange: LocalDateTime
 
-    val operations: ArrayList<Operation> = ArrayList()
+    val operations: ArrayList<ComputerOperation> = ArrayList()
 
     init {
         ekp = name.substring(0, 5)

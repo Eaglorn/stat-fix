@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 class Server(private val pathImport: String, private val pathExport: String) {
     private lateinit var data: Data
     fun run() {
-        data = Data.load(pathExport)
+        data = Data.load(pathExport, true)
         var isChange = false
         val folder = File(pathImport)
         val files = folder.listFiles()

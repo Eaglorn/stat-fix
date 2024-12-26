@@ -1,6 +1,6 @@
 import java.time.LocalDateTime
 
-class Operation(date: LocalDateTime, version: String) {
+class ComputerOperation(date: LocalDateTime, version: String) {
     val fixes: ArrayList<String> = ArrayList()
 
     fun addFix(fix: String) {

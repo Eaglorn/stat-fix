@@ -48,7 +48,7 @@ class Data {
                     }
                 }
                 if (listFixes.isNotEmpty()) {
-                    val operation = Operation(operationDateTime, version)
+                    val operation = ComputerOperation(operationDateTime, version)
                     for (fix in listFixes) {
                         if (!fixes.contains(fix)) {
                             operation.addFix(fix)
@@ -63,7 +63,7 @@ class Data {
             }
         } else {
             if (listFixes.isNotEmpty()) {
-                val operation = Operation(operationDateTime, version)
+                val operation = ComputerOperation(operationDateTime, version)
                 for (fix in listFixes) {
                     operation.addFix(fix)
                 }
@@ -95,32 +95,34 @@ class Data {
             return monthsBetween > month
         }
 
-        fun load(pathExport: String): Data {
+        fun load(pathExport: String, isClean: Boolean): Data {
             return if (Files.exists(Paths.get(pathExport + "info.json"))) {
                 val gson: Gson = GsonBuilder()
                     .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter("dd-MM-yyyy HH:mm:ss"))
                     .create()
                 val data: Data = gson.fromJson(JsonReader(FileReader(pathExport + "info.json")), Data::class.java)
-                val date1: LocalDateTime = LocalDateTime.now()
-                for (computer in data.computers) {
-                    var isDelete = false
-                    var date2: LocalDateTime = computer.dateChange
-                    if (isDifferenceMoreThanMonths(date1, date2, 3)) {
-                        isDelete = true
-                    }
-                    if (!isDelete) {
-                        for (operation in computer.operations) {
-                            date2 = operation.date
-                            if (isDifferenceMoreThanMonths(date1, date2, 1)) {
-                                computer.operations.remove(operation)
-                            }
-                        }
-                        if (computer.operations.size == 0) {
+                if(isClean) {
+                    val date1: LocalDateTime = LocalDateTime.now()
+                    for (computer in data.computers) {
+                        var isDelete = false
+                        var date2: LocalDateTime = computer.dateChange
+                        if (isDifferenceMoreThanMonths(date1, date2, 3)) {
                             isDelete = true
                         }
-                    }
-                    if (isDelete) {
-                        data.computers.remove(computer)
+                        if (!isDelete) {
+                            for (operation in computer.operations) {
+                                date2 = operation.date
+                                if (isDifferenceMoreThanMonths(date1, date2, 1)) {
+                                    computer.operations.remove(operation)
+                                }
+                            }
+                            if (computer.operations.size == 0) {
+                                isDelete = true
+                            }
+                        }
+                        if (isDelete) {
+                            data.computers.remove(computer)
+                        }
                     }
                 }
                 data
