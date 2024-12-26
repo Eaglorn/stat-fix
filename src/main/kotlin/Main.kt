@@ -12,7 +12,8 @@ fun main(args: Array<String>) {
         }
     }*/
 
-    runServer()
+    //runServer()
+    runClient("config")
 }
 
 private fun runServer() {
