@@ -11,6 +11,7 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
         configResult = ConfigResult.load(pathConfigs, nameConfig)
 
         var computers: ArrayList<Computer> = data.computers
+
         lateinit var listComputers: ArrayList<String>
         val emptyComputers: ArrayList<String> = ArrayList()
 
@@ -32,32 +33,46 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
 
         if(configResult.date.value) {
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val removeComputers: ArrayList<Computer> = ArrayList()
+            val removeOperations: ArrayList<ComputerOperation> = ArrayList()
             if(configResult.date.type == "one") {
                 for(computer in computers) {
                     for(operation in computer.operations) {
                         if(!operation.date.format(formatter).equals(configResult.date.date)) {
-                            computer.operations.remove(operation)
+                            removeOperations.add(operation)
                         }
                     }
-                    if(computer.operations.isEmpty()) {
-                        computers.remove(computer)
+                    for(operation in removeOperations) {
+                        computer.operations.remove(operation)
                     }
+                    if(computer.operations.isEmpty()) {
+                        removeComputers.add(computer)
+                    }
+                }
+                for(computer in removeComputers) {
+                    computers.remove(computer)
                 }
             } else if(configResult.date.type == "range") {
                 val localDateList: ArrayList<String> = ArrayList(configResult.date.date.split(" ", limit = 2))
                 val localDateStart: LocalDate = LocalDate.parse(localDateList[0], formatter)
-                val localDateEnd: LocalDate = LocalDate.parse(localDateList[0], formatter)
+                val localDateEnd: LocalDate = LocalDate.parse(localDateList[1], formatter)
 
                 for(computer in computers) {
                     for(operation in computer.operations) {
                         val localDate: LocalDate = operation.date.toLocalDate()
                         if(!(localDate.isEqual(localDateStart) || localDate.isEqual(localDateEnd) || (localDate.isAfter(localDateStart) && localDate.isBefore(localDateEnd)))) {
-                            computer.operations.remove(operation)
+                            removeOperations.add(operation)
                         }
                     }
-                    if(computer.operations.isEmpty()) {
-                        computers.remove(computer)
+                    for(operation in removeOperations) {
+                        computer.operations.remove(operation)
                     }
+                    if(computer.operations.isEmpty()) {
+                        removeComputers.add(computer)
+                    }
+                }
+                for(computer in removeComputers) {
+                    computers.remove(computer)
                 }
             }
         }
@@ -69,8 +84,24 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
                     countAllFixes = countAllFixes.plus(operation.fixes.size)
                 }
             }
-            computerResult.add("Общее количество установленных фиксов: ${countAllFixes}")
+            computerResult.add("Общее количество: ${countAllFixes}")
             computerResult.add("")
+        }
+
+        var maxCountFixes = 1;
+
+        for(computer in computers) {
+            if(configResult.countSeparateFixes) {
+                var countFixes: Int = 0
+                for (operation in computer.operations) {
+                    countFixes = countFixes.plus(operation.fixes.size)
+                }
+                if (countFixes >= 100 && maxCountFixes < 3) {
+                    maxCountFixes = 3
+                } else if(countFixes >= 10 && maxCountFixes < 2) {
+                    maxCountFixes = 2
+                }
+            }
         }
 
         for(computer in computers) {
@@ -81,7 +112,22 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
                 for (operation in computer.operations) {
                     countFixes = countFixes.plus(operation.fixes.size)
                 }
-                text = text.plus(" | Количество фиксов: ${countFixes}")
+
+                var countNumbers = 1
+
+                if (countFixes >= 100) {
+                    countNumbers = 3
+                } else if(countFixes >= 10) {
+                    countNumbers = 2
+                }
+
+                var textSpace = when (maxCountFixes - countNumbers) {
+                    0 -> ""
+                    1 -> " "
+                    else -> "  "
+                }
+
+                text = text.plus(" | Количество: ${textSpace}${countFixes}")
             }
             if(configResult.listFixes) {
                 var fixes: String = ""
@@ -92,7 +138,7 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
                     }
                 }
                 fixes = fixes.plus(listFixes.joinToString(separator = ","))
-                text = text.plus(" | Установленные фиксы: ${fixes}")
+                text = text.plus(" | Список: ${fixes}")
             }
             computerResult.add(text)
             if(configResult.listComputers.value) {
