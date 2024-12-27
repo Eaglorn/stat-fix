@@ -8,7 +8,7 @@ internal class ComputerSerializer : JsonSerializer<Computer> {
         jsonObject.addProperty("name", computer.name)
         jsonObject.addProperty("ekp", computer.ekp)
         jsonObject.addProperty("version", computer.version)
-        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
         jsonObject.addProperty("dateChange", formatter.format(computer.dateChange))
         val operationsArray = JsonArray()
         for (operation in computer.operations) {

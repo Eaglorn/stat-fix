@@ -6,9 +6,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class ConfigResult {
-    lateinit var  listComputers: ConfigResultListComputer
-    lateinit var date: ConfigResultDate
-    lateinit var ekp: ConfigResultEKP
+    var listComputers: String = ""
+    var date: ConfigResultDate = ConfigResultDate()
+    var ekp: String = ""
     var listFixes: Boolean = false
     var countAllFixes: Boolean = false
     var countSeparateFixes: Boolean = false
@@ -28,18 +28,7 @@ class ConfigResult {
     }
 }
 
-class ConfigResultListComputer {
-    var value = false
-    var name = ""
-}
-
 class ConfigResultDate {
-    var value = false
     var type = ""
     var date = ""
-}
-
-class ConfigResultEKP {
-    var value = false
-    var name = ""
 }

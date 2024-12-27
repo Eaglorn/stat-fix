@@ -19,20 +19,20 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
 
         computers = ArrayList(computers.filter { it -> it.version == version })
 
-        if(configResult.ekp.value) {
-            computers = ArrayList(computers.filter { it -> it.ekp == configResult.ekp.name })
+        if(configResult.ekp.isNotEmpty()) {
+            computers = ArrayList(computers.filter { it -> it.ekp == configResult.ekp })
         }
 
-        if(configResult.listComputers.value) {
-            listComputers = ArrayList(FileUtils.readLines(File(pathConfigs + configResult.listComputers.name), "UTF8"))
+        if(configResult.listComputers.isNotEmpty()) {
+            listComputers = ArrayList(FileUtils.readLines(File(pathConfigs + configResult.listComputers + ".txt"), "UTF8"))
             for(computer in listComputers) {
                 emptyComputers.add(computer)
             }
             computers = ArrayList(computers.filter { it -> listComputers.contains(it.name) })
         }
 
-        if(configResult.date.value) {
-            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        if(configResult.date.date.isNotEmpty() && configResult.date.type.isNotEmpty()) {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             val removeComputers: ArrayList<Computer> = ArrayList()
             val removeOperations: ArrayList<ComputerOperation> = ArrayList()
             if(configResult.date.type == "one") {
@@ -141,12 +141,12 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
                 text = text.plus(" | Список: ${fixes}")
             }
             computerResult.add(text)
-            if(configResult.listComputers.value) {
+            if(configResult.listComputers.isNotEmpty()) {
                 emptyComputers.remove(computer.name)
             }
         }
 
-        if(configResult.listComputers.value) {
+        if(configResult.listComputers.isNotEmpty()) {
             if(emptyComputers.isNotEmpty()) {
                 computerResult.add("")
                 computerResult.add("Компьютеры не соответствующие условиям выборки:")
@@ -164,6 +164,10 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
             }
         }
 
-        FileUtils.write(File(pathResults + configResult.saveFile), text, "UTF8")
+        if(configResult.saveFile.isNotEmpty()) {
+            FileUtils.write(File(pathResults + configResult.saveFile), text, "UTF8")
+        } else {
+            println(text)
+        }
     }
 }

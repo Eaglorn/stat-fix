@@ -4,11 +4,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class LocalDateTimeAdapter(pattern: String) : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
-    private val formatter: DateTimeFormatter
-
-    init {
-        formatter = pattern.let { DateTimeFormatter.ofPattern(it) }
-    }
+    private val formatter: DateTimeFormatter = pattern.let { DateTimeFormatter.ofPattern(it) }
 
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LocalDateTime {

@@ -2,7 +2,7 @@ private lateinit var server: Server
 private lateinit var client: Client
 
 fun main(args: Array<String>) {
-    /*if (args.isNotEmpty()) {
+    if (args.isNotEmpty()) {
         when (args[0]) {
             "server" -> {
                 runServer()
@@ -10,10 +10,7 @@ fun main(args: Array<String>) {
             "client" -> runClient(args[1])
             else -> {}
         }
-    }*/
-
-    //runServer()
-    runClient("config")
+    }
 }
 
 private fun runServer() {

@@ -30,7 +30,7 @@ class Data {
         val textTime = parts[2]
         val listFixes = parts.drop(3)
 
-        val operationDateTime = LocalDateTime.parse("$textDate $textTime",DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+        val operationDateTime = LocalDateTime.parse("$textDate $textTime",DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
 
         val computer = findComputerByName(name)
         if (computer != null) {
@@ -76,7 +76,7 @@ class Data {
     fun save(pathExport: String) {
         FileWriter(pathExport + "info.json").use { file ->
             val gson: Gson = GsonBuilder()
-                .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter("dd-MM-yyyy HH:mm:ss"))
+                .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter("dd.MM.yyyy HH:mm:ss"))
                 .create()
             file.write(gson.toJson(this, Data::class.java))
             file.flush()
@@ -98,7 +98,7 @@ class Data {
         fun load(pathExport: String, isClean: Boolean): Data {
             return if (Files.exists(Paths.get(pathExport + "info.json"))) {
                 val gson: Gson = GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter("dd-MM-yyyy HH:mm:ss"))
+                    .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter("dd.MM.yyyy HH:mm:ss"))
                     .create()
                 val data: Data = gson.fromJson(JsonReader(FileReader(pathExport + "info.json")), Data::class.java)
                 if(isClean) {
