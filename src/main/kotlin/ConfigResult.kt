@@ -16,10 +16,11 @@ class ConfigResult {
 
     companion object {
         fun load(pathConfigs: String, nameConfig: String): ConfigResult {
-            val pathConfig: String = "${pathConfigs}${nameConfig}.json";
+            val pathConfig: String = "${pathConfigs}${nameConfig}.json"
             return if (Files.exists(Paths.get(pathConfig))) {
                 val gson: Gson = GsonBuilder().create()
-                val configResult: ConfigResult = gson.fromJson(JsonReader(FileReader(pathConfig)), ConfigResult::class.java)
+                val configResult: ConfigResult =
+                    gson.fromJson(JsonReader(FileReader(pathConfig)), ConfigResult::class.java)
                 configResult
             } else {
                 ConfigResult()

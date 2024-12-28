@@ -14,7 +14,8 @@ class ConfigServer {
             val pathConfig = System.getProperty("user.dir") + "/config.json"
             return if (Files.exists(Paths.get(pathConfig))) {
                 val gson: Gson = GsonBuilder().create()
-                val configServer: ConfigServer = gson.fromJson(JsonReader(FileReader(pathConfig)), ConfigServer::class.java)
+                val configServer: ConfigServer =
+                    gson.fromJson(JsonReader(FileReader(pathConfig)), ConfigServer::class.java)
                 configServer
             } else {
                 ConfigServer()

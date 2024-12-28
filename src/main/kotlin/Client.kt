@@ -3,7 +3,13 @@ import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class Client(private val pathInfo: String, private val pathConfigs: String, private val pathResults: String, private val nameConfig: String, private val version:String) {
+class Client(
+    private val pathInfo: String,
+    private val pathConfigs: String,
+    private val pathResults: String,
+    private val nameConfig: String,
+    private val version: String
+) {
     private lateinit var data: Data
     private lateinit var configResult: ConfigResult
     fun run() {
@@ -19,65 +25,69 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
 
         computers = ArrayList(computers.filter { it -> it.version == version })
 
-        if(configResult.ekp.isNotEmpty()) {
+        if (configResult.ekp.isNotEmpty()) {
             computers = ArrayList(computers.filter { it -> it.ekp == configResult.ekp })
         }
 
-        if(configResult.listComputers.isNotEmpty()) {
-            listComputers = ArrayList(FileUtils.readLines(File(pathConfigs + configResult.listComputers + ".txt"), "UTF8"))
-            for(computer in listComputers) {
+        if (configResult.listComputers.isNotEmpty()) {
+            listComputers =
+                ArrayList(FileUtils.readLines(File(pathConfigs + configResult.listComputers + ".txt"), "UTF8"))
+            for (computer in listComputers) {
                 emptyComputers.add(computer)
             }
             computers = ArrayList(computers.filter { it -> listComputers.contains(it.name) })
         }
 
-        if(configResult.date.date.isNotEmpty() && configResult.date.type.isNotEmpty()) {
+        if (configResult.date.date.isNotEmpty() && configResult.date.type.isNotEmpty()) {
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             val removeComputers: ArrayList<Computer> = ArrayList()
             val removeOperations: ArrayList<ComputerOperation> = ArrayList()
-            if(configResult.date.type == "one") {
-                for(computer in computers) {
-                    for(operation in computer.operations) {
-                        if(!operation.date.format(formatter).equals(configResult.date.date)) {
+            if (configResult.date.type == "one") {
+                for (computer in computers) {
+                    for (operation in computer.operations) {
+                        if (!operation.date.format(formatter).equals(configResult.date.date)) {
                             removeOperations.add(operation)
                         }
                     }
-                    for(operation in removeOperations) {
+                    for (operation in removeOperations) {
                         computer.operations.remove(operation)
                     }
-                    if(computer.operations.isEmpty()) {
+                    if (computer.operations.isEmpty()) {
                         removeComputers.add(computer)
                     }
                 }
-                for(computer in removeComputers) {
+                for (computer in removeComputers) {
                     computers.remove(computer)
                 }
-            } else if(configResult.date.type == "range") {
+            } else if (configResult.date.type == "range") {
                 val localDateList: ArrayList<String> = ArrayList(configResult.date.date.split(" ", limit = 2))
                 val localDateStart: LocalDate = LocalDate.parse(localDateList[0], formatter)
                 val localDateEnd: LocalDate = LocalDate.parse(localDateList[1], formatter)
 
-                for(computer in computers) {
-                    for(operation in computer.operations) {
+                for (computer in computers) {
+                    for (operation in computer.operations) {
                         val localDate: LocalDate = operation.date.toLocalDate()
-                        if(!(localDate.isEqual(localDateStart) || localDate.isEqual(localDateEnd) || (localDate.isAfter(localDateStart) && localDate.isBefore(localDateEnd)))) {
+                        if (!(localDate.isEqual(localDateStart) || localDate.isEqual(localDateEnd) || (localDate.isAfter(
+                                localDateStart
+                            ) && localDate.isBefore(localDateEnd)))
+                        ) {
                             removeOperations.add(operation)
                         }
                     }
-                    for(operation in removeOperations) {
+                    for (operation in removeOperations) {
                         computer.operations.remove(operation)
                     }
-                    if(computer.operations.isEmpty()) {
+                    if (computer.operations.isEmpty()) {
                         removeComputers.add(computer)
                     }
                 }
-                for(computer in removeComputers) {
+                for (computer in removeComputers) {
                     computers.remove(computer)
                 }
             }
         }
 
-        if(configResult.countAllFixes) {
+        if (configResult.countAllFixes) {
             var countAllFixes: Int = 0
             for (computer in computers) {
                 for (operation in computer.operations) {
@@ -88,26 +98,26 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
             computerResult.add("")
         }
 
-        var maxCountFixes = 1;
+        var maxCountFixes = 1
 
-        for(computer in computers) {
-            if(configResult.countSeparateFixes) {
+        for (computer in computers) {
+            if (configResult.countSeparateFixes) {
                 var countFixes: Int = 0
                 for (operation in computer.operations) {
                     countFixes = countFixes.plus(operation.fixes.size)
                 }
                 if (countFixes >= 100 && maxCountFixes < 3) {
                     maxCountFixes = 3
-                } else if(countFixes >= 10 && maxCountFixes < 2) {
+                } else if (countFixes >= 10 && maxCountFixes < 2) {
                     maxCountFixes = 2
                 }
             }
         }
 
-        for(computer in computers) {
+        for (computer in computers) {
             var text: String = ""
             text = text.plus(computer.name)
-            if(configResult.countSeparateFixes) {
+            if (configResult.countSeparateFixes) {
                 var countFixes: Int = 0
                 for (operation in computer.operations) {
                     countFixes = countFixes.plus(operation.fixes.size)
@@ -117,7 +127,7 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
 
                 if (countFixes >= 100) {
                     countNumbers = 3
-                } else if(countFixes >= 10) {
+                } else if (countFixes >= 10) {
                     countNumbers = 2
                 }
 
@@ -129,11 +139,11 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
 
                 text = text.plus(" | Количество: ${textSpace}${countFixes}")
             }
-            if(configResult.listFixes) {
+            if (configResult.listFixes) {
                 var fixes: String = ""
                 val listFixes: ArrayList<String> = ArrayList()
                 for (operation in computer.operations) {
-                    for(fix in operation.fixes) {
+                    for (fix in operation.fixes) {
                         listFixes.add(fix)
                     }
                 }
@@ -141,16 +151,16 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
                 text = text.plus(" | Список: ${fixes}")
             }
             computerResult.add(text)
-            if(configResult.listComputers.isNotEmpty()) {
+            if (configResult.listComputers.isNotEmpty()) {
                 emptyComputers.remove(computer.name)
             }
         }
 
-        if(configResult.listComputers.isNotEmpty()) {
-            if(emptyComputers.isNotEmpty()) {
+        if (configResult.listComputers.isNotEmpty()) {
+            if (emptyComputers.isNotEmpty()) {
                 computerResult.add("")
                 computerResult.add("Компьютеры не соответствующие условиям выборки:")
-                for(computer in emptyComputers) {
+                for (computer in emptyComputers) {
                     computerResult.add(computer)
                 }
             }
@@ -158,13 +168,13 @@ class Client(private val pathInfo: String, private val pathConfigs: String, priv
 
         var text: String = ""
 
-        if(computerResult.isNotEmpty()) {
-            for(result in computerResult) {
+        if (computerResult.isNotEmpty()) {
+            for (result in computerResult) {
                 text = text.plus(result).plus("\n")
             }
         }
 
-        if(configResult.saveFile.isNotEmpty()) {
+        if (configResult.saveFile.isNotEmpty()) {
             FileUtils.write(File(pathResults + configResult.saveFile), text, "UTF8")
         } else {
             println(text)

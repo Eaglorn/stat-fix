@@ -30,7 +30,8 @@ class Data {
         val textTime = parts[2]
         val listFixes = parts.drop(3)
 
-        val operationDateTime = LocalDateTime.parse("$textDate $textTime",DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+        val operationDateTime =
+            LocalDateTime.parse("$textDate $textTime", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
 
         val computer = findComputerByName(name)
         if (computer != null) {
@@ -39,7 +40,7 @@ class Data {
             }
             val operations = computer.operations
             val fixes = ArrayList<String>()
-            if((operations.filter { it.date.isEqual(operationDateTime)}).isEmpty()) {
+            if ((operations.filter { it.date.isEqual(operationDateTime) }).isEmpty()) {
                 for (operation in operations) {
                     if (version == operation.version) {
                         for (fix in operation.fixes) {
@@ -101,7 +102,7 @@ class Data {
                     .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter("dd.MM.yyyy HH:mm:ss"))
                     .create()
                 val data: Data = gson.fromJson(JsonReader(FileReader(pathExport + "info.json")), Data::class.java)
-                if(isClean) {
+                if (isClean) {
                     val date1: LocalDateTime = LocalDateTime.now()
                     for (computer in data.computers) {
                         var isDelete = false

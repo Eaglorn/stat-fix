@@ -7,6 +7,7 @@ fun main(args: Array<String>) {
             "server" -> {
                 runServer()
             }
+
             "client" -> runClient(args[1])
             else -> {}
         }
@@ -21,6 +22,12 @@ private fun runServer() {
 
 private fun runClient(nameConfig: String) {
     val configClient = ConfigClient.load()
-    client = Client(configClient.pathInfo, configClient.pathConfigs, configClient.pathResults, nameConfig, configClient.version)
+    client = Client(
+        configClient.pathInfo,
+        configClient.pathConfigs,
+        configClient.pathResults,
+        nameConfig,
+        configClient.version
+    )
     client.run()
 }
