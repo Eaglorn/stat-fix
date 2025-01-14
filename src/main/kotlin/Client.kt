@@ -94,7 +94,11 @@ class Client(
                     countAllFixes = countAllFixes.plus(operation.fixes.size)
                 }
             }
-            computerResult.add("Общее количество: ${countAllFixes}")
+            computerResult.add("Общее количество установленных фиксов: ${countAllFixes}")
+        }
+
+        if (configResult.countComputers) {
+            computerResult.add("Количество компьютеров: ${computers.size}")
             computerResult.add("")
         }
 

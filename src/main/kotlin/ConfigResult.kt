@@ -9,6 +9,7 @@ class ConfigResult {
     var listComputers: String = ""
     var date: ConfigResultDate = ConfigResultDate()
     var ekp: String = ""
+    var countComputers: Boolean = false
     var listFixes: Boolean = false
     var countAllFixes: Boolean = false
     var countSeparateFixes: Boolean = false
